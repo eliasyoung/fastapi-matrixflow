@@ -1,0 +1,35 @@
+version: "1.0.0"
+name: matrix_flow_test_db
+
+services:
+  db:
+    container_name: matrix_flow_db_container
+    image: postgres:16.4
+    restart: always
+    environment:
+      POSTGRES_DB: matrix_flow
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      PGDATA: /var/lib/postgresql/matrix_flow/data
+      PGPORT: 5430
+    ports:
+      - "8010:5430"
+    volumes:
+      - db-data:/var/lib/postgresql/matrix_flow/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "admin",
+          "-d",
+          "matrix_flow",
+          "-h",
+          "localhost",
+        ]
+      interval: 5s
+      retries: 5
+
+volumes:
+  db-data:
