@@ -38,7 +38,7 @@ target_metadata = Base.metadata
 # ... etc.
 
 def get_url():
-    return os.getenv("POSTGRES_DATABASE_URL")
+    return os.getenv("DATABASE_URL")
 
 
 def do_run_migrations(connection: Connection) -> None:

@@ -1,3 +1,4 @@
+import uuid
 from typing import Union
 from pydantic import BaseModel
 
@@ -16,8 +17,13 @@ class MatrixFlowViewport(BaseModel):
     y: int
     zoom: int
 
+class CreateMatrixFlowPayload(BaseModel):
+    nodes: list[dict] = []
+    edges: list[MatrixFlowEdge] = []
+    viewport: MatrixFlowViewport
+
 class MatrixFlow(BaseModel):
-    id: str
+    id: uuid.UUID
     nodes: list[dict] = []
     edges: list[MatrixFlowEdge] = []
     viewport: MatrixFlowViewport

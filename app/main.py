@@ -1,22 +1,30 @@
+import sys
+import logging
+
 from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 from app.api.main import api_router
 
-import logging
-
-from dotenv import load_dotenv
+from app.settings import settings
+from app.database import sessionManager
 
 from pydantic import BaseModel
 
-load_dotenv()
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG if settings.log_level == "DEBUG" else logging.INFO)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    if sessionManager._engine is not None:
+        await sessionManager.close()
+
+
+app = FastAPI(lifespan=lifespan, title=settings.project_name)
 
 origins = ['*']
-
-logger = logging.getLogger(__name__)
 
 app.add_middleware(
     CORSMiddleware,
