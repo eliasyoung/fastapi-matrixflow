@@ -1,5 +1,5 @@
 from app.models import Matrixflow as MatrixFlowDBModel
-from app.schemas.matrix_flow import CreateMatrixFlowPayload
+from app.schemas.matrix_flow import CreateMatrixFlowPayload, GetMatrixFlowListItem
 from fastapi import HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ async def get_matrix_flow(db_session: AsyncSession, flow_id: uuid.UUID) -> Matri
     return flow
 
 
+
 async def create_matrix_flow(db_session: AsyncSession, flow: CreateMatrixFlowPayload) -> MatrixFlowDBModel:
     graph = flow.model_dump_json()
 
@@ -22,5 +23,10 @@ async def create_matrix_flow(db_session: AsyncSession, flow: CreateMatrixFlowPay
     return new_flow
 
 async def get_all_matrix_flows(db_session: AsyncSession) -> list[uuid.UUID]:
-    flow_ids = (await db_session.scalars(select(MatrixFlowDBModel.id))).all()
-    return flow_ids
+    flows = (await db_session.scalars(select(MatrixFlowDBModel))).all()
+    return flows
+
+async def get_all_matrix_flows_list(db_session: AsyncSession):
+    flow_list = (await db_session.execute(select(MatrixFlowDBModel.id, MatrixFlowDBModel.created_at, MatrixFlowDBModel.updated_at))).all()
+
+    return flow_list
