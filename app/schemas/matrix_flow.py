@@ -1,4 +1,3 @@
-from typing_extensions import Optional
 import uuid
 
 from datetime import datetime
@@ -16,9 +15,9 @@ class MatrixFlowEdge(BaseModel):
     target: str
 
 class MatrixFlowViewport(BaseModel):
-    x: int
-    y: int
-    zoom: int
+    x: float
+    y: float
+    zoom: float
 
 class MatrixFlowResponseGraph(BaseModel):
     nodes: list[dict] = []
@@ -32,6 +31,8 @@ class CreateMatrixFlowPayload(BaseModel):
 
 class GetMatrixFlowResponse(BaseModel):
     id: uuid.UUID
+    name: str
+    description: Union[str, None] = None
     graph: MatrixFlowResponseGraph
     created_at: datetime
     updated_at: datetime
@@ -40,6 +41,8 @@ class GetMatrixFlowListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
+    name: str
+    description: Union[str, None] = None
     created_at: datetime
     updated_at: datetime
 
@@ -54,3 +57,5 @@ class MatrixFlow(BaseModel):
 
 class UpdateMatrixFlowPayload(BaseModel):
     graph: Optional[MatrixFlowResponseGraph] = None
+    name: Optional[str] = None
+    description: Optional[str] = None

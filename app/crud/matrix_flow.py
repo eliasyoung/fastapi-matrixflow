@@ -1,5 +1,5 @@
 from app.models import Matrixflow as MatrixFlowDBModel
-from app.schemas.matrix_flow import CreateMatrixFlowPayload, UpdateMatrixFlowPayload
+from app.schemas.matrix_flow import CreateMatrixFlowPayload, MatrixFlow, UpdateMatrixFlowPayload
 from fastapi import HTTPException
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +27,7 @@ async def get_all_matrix_flows(db_session: AsyncSession):
     return flows
 
 async def get_all_matrix_flows_list(db_session: AsyncSession):
-    flow_list = (await db_session.execute(select(MatrixFlowDBModel.id, MatrixFlowDBModel.created_at, MatrixFlowDBModel.updated_at))).all()
+    flow_list = (await db_session.execute(select(MatrixFlowDBModel.id, MatrixFlowDBModel.name, MatrixFlowDBModel.description, MatrixFlowDBModel.created_at, MatrixFlowDBModel.updated_at).order_by(MatrixFlowDBModel.created_at.desc()))).all()
 
     return flow_list
 

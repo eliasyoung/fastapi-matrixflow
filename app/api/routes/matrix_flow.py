@@ -25,12 +25,14 @@ async def get_flow(flow_id: uuid.UUID, db_session: DBSessoinDep):
 
     return GetMatrixFlowResponse(
         id=flow.id,
+        name=flow.name,
+        description=flow.description,
         graph=graph_data,
         created_at=flow.created_at,
         updated_at=flow.updated_at
     )
 
-@router.patch("/{flow_id}/save")
+@router.patch("/{flow_id}/save", response_model=GetMatrixFlowResponse)
 async def save_flow(flow_id: uuid.UUID, flow: UpdateMatrixFlowPayload, db_session: DBSessoinDep):
     updated_flow = await update_matrix_flow_by_id(db_session, flow_id, flow)
     await db_session.commit()
@@ -41,6 +43,8 @@ async def save_flow(flow_id: uuid.UUID, flow: UpdateMatrixFlowPayload, db_sessio
     return GetMatrixFlowResponse(
         id=updated_flow.id,
         graph=graph_data,
+        name=updated_flow.name,
+        description=updated_flow.description,
         created_at=updated_flow.created_at,
         updated_at=updated_flow.updated_at
     )
