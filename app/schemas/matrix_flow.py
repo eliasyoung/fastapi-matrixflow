@@ -1,7 +1,8 @@
+from typing_extensions import Optional
 import uuid
 
 from datetime import datetime
-from typing import Union
+from typing import Union, Optional
 from pydantic import BaseModel, ConfigDict
 
 class Item(BaseModel):
@@ -50,3 +51,6 @@ class MatrixFlow(BaseModel):
     viewport: MatrixFlowViewport
     created_at: datetime
     updated_at: datetime
+
+class UpdateMatrixFlowPayload(BaseModel):
+    graph: Optional[MatrixFlowResponseGraph] = None
