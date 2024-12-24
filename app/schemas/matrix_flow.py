@@ -4,11 +4,6 @@ from datetime import datetime
 from typing import Union, Optional
 from pydantic import BaseModel, ConfigDict
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
 class MatrixFlowEdge(BaseModel):
     id: str
     source: str
@@ -25,9 +20,9 @@ class MatrixFlowResponseGraph(BaseModel):
     viewport: MatrixFlowViewport
 
 class CreateMatrixFlowPayload(BaseModel):
-    nodes: list[dict] = []
-    edges: list[MatrixFlowEdge] = []
-    viewport: MatrixFlowViewport
+    name: str
+    description: Union[str, None] = None
+    graph: MatrixFlowResponseGraph
 
 class GetMatrixFlowResponse(BaseModel):
     id: uuid.UUID

@@ -1,22 +1,22 @@
 from app.models import Matrixflow as MatrixFlowDBModel
-from app.schemas.matrix_flow import CreateMatrixFlowPayload, MatrixFlow, UpdateMatrixFlowPayload
-from fastapi import HTTPException
+from app.schemas.matrix_flow import CreateMatrixFlowPayload, UpdateMatrixFlowPayload
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
 async def get_matrix_flow(db_session: AsyncSession, flow_id: uuid.UUID) -> MatrixFlowDBModel:
     flow = (await db_session.scalars(select(MatrixFlowDBModel).where(MatrixFlowDBModel.id == flow_id))).first()
-    if not flow:
-        raise HTTPException(status_code=404, detail="Flow not found")
+
     return flow
 
 
 
 async def create_matrix_flow(db_session: AsyncSession, flow: CreateMatrixFlowPayload) -> MatrixFlowDBModel:
-    graph = flow.model_dump_json()
+    insert_data = {key: value for key, value in flow.dict().items() if value is not None}
+    graph = flow.graph.model_dump_json()
+    insert_data.update({'graph': graph})
 
-    result = await db_session.execute(insert(MatrixFlowDBModel).values(graph=graph).returning(MatrixFlowDBModel))
+    result = await db_session.execute(insert(MatrixFlowDBModel).values(**insert_data).returning(MatrixFlowDBModel))
 
     new_flow = result.scalar_one()
 
@@ -38,8 +38,5 @@ async def update_matrix_flow_by_id(db_session: AsyncSession, flow_id: uuid.UUID,
         update_data.update({'graph': graph})
 
     updated_flow = (await db_session.scalars(update(MatrixFlowDBModel).where(MatrixFlowDBModel.id == flow_id).values(**update_data).returning(MatrixFlowDBModel))).first()
-
-    if updated_flow is None:
-        raise HTTPException(status_code=404, detail="Flow not found")
 
     return updated_flow
