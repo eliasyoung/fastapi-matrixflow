@@ -4,6 +4,14 @@ from datetime import datetime
 from typing import Union, Optional
 from pydantic import BaseModel, ConfigDict
 
+# class MatrixFlowNodeData(BaseModel):
+#     label: str
+
+# class MatrixFlowNode(BaseModel):
+#     id: str
+#     data: MatrixFlowNodeData
+#     type: str
+
 class MatrixFlowEdge(BaseModel):
     id: str
     source: str

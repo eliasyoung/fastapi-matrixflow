@@ -1,7 +1,21 @@
 from fastapi import APIRouter, HTTPException
-from app.schemas.matrix_flow import CreateMatrixFlowPayload, GetMatrixFlowResponse,GetMatrixFlowListItem, UpdateMatrixFlowPayload
+from app.schemas.matrix_flow import (
+    CreateMatrixFlowPayload,
+    GetMatrixFlowResponse,
+    GetMatrixFlowListItem,
+    UpdateMatrixFlowPayload,
+    MatrixFlowResponseGraph,
+    # MatrixFlowNode
+)
 from app.schemas.api import CustomJSONResponse
-from app.crud.matrix_flow import create_matrix_flow, get_matrix_flow, get_all_matrix_flows, get_all_matrix_flows_list,update_matrix_flow_by_id
+from app.crud.matrix_flow import (
+    create_matrix_flow,
+    get_matrix_flow,
+    get_all_matrix_flows,
+    get_all_matrix_flows_list,
+    update_matrix_flow_by_id,
+    delete_matrix_flow_by_id
+)
 from app.api.dep import DBSessoinDep
 
 import uuid
@@ -90,16 +104,43 @@ async def create_flow(flow: CreateMatrixFlowPayload, db_session: DBSessoinDep):
 
 @router.post("/{flow_id}/run")
 async def run_flow(flow_id: uuid.UUID, db_session: DBSessoinDep):
-    flow = await get_matrix_flow(db_session, flow_id)
+    try:
 
-    if not flow:
+        flow = await get_matrix_flow(db_session, flow_id)
+
+
+        if not flow:
+            raise HTTPException(status_code=404, detail="Flow not found")
+
+        graph = MatrixFlowResponseGraph.parse_raw(flow.graph)
+
+        # node_array = []
+
+        # for node in graph.nodes:
+        #     validated_node = MatrixFlowNode.validate(node)
+        #     node_array.append(validated_node)
+
+
+        return CustomJSONResponse(
+            code=0,
+            data=graph
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/{flow_id}/delete")
+async def delete_flow(flow_id: uuid.UUID, db_session: DBSessoinDep):
+    count = await delete_matrix_flow_by_id(db_session, flow_id)
+
+    if count == 0:
         raise HTTPException(status_code=404, detail="Flow not found")
+
+    await db_session.commit()
 
     return CustomJSONResponse(
         code=0,
-        data={
-            "status": "running",
-            "message": f'flow {flow_id} running!',
-            "run_flow_id": flow_id
-        }
+        data=None
     )

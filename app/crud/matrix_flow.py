@@ -1,6 +1,6 @@
 from app.models import Matrixflow as MatrixFlowDBModel
 from app.schemas.matrix_flow import CreateMatrixFlowPayload, UpdateMatrixFlowPayload
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
@@ -40,3 +40,8 @@ async def update_matrix_flow_by_id(db_session: AsyncSession, flow_id: uuid.UUID,
     updated_flow = (await db_session.scalars(update(MatrixFlowDBModel).where(MatrixFlowDBModel.id == flow_id).values(**update_data).returning(MatrixFlowDBModel))).first()
 
     return updated_flow
+
+async def delete_matrix_flow_by_id(db_session: AsyncSession, flow_id: uuid.UUID):
+    result = (await db_session.execute(delete(MatrixFlowDBModel).where(MatrixFlowDBModel.id == flow_id)))
+
+    return result.rowcount
