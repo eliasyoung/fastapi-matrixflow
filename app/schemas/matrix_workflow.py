@@ -12,35 +12,35 @@ from pydantic import BaseModel, ConfigDict
 #     data: MatrixFlowNodeData
 #     type: str
 
-class MatrixFlowEdge(BaseModel):
+class MatrixWorkflowEdge(BaseModel):
     id: str
     source: str
     target: str
 
-class MatrixFlowViewport(BaseModel):
+class MatrixWorkflowViewport(BaseModel):
     x: float
     y: float
     zoom: float
 
-class MatrixFlowResponseGraph(BaseModel):
+class MatrixWorkflowResponseGraph(BaseModel):
     nodes: list[dict] = []
-    edges: list[MatrixFlowEdge] = []
-    viewport: MatrixFlowViewport
+    edges: list[MatrixWorkflowEdge] = []
+    viewport: MatrixWorkflowViewport
 
-class CreateMatrixFlowPayload(BaseModel):
+class CreateMatrixWorkflowPayload(BaseModel):
     name: str
     description: Union[str, None] = None
-    graph: MatrixFlowResponseGraph
+    graph: MatrixWorkflowResponseGraph
 
-class GetMatrixFlowResponse(BaseModel):
+class GetMatrixWorkflowResponse(BaseModel):
     id: uuid.UUID
     name: str
     description: Union[str, None] = None
-    graph: MatrixFlowResponseGraph
+    graph: MatrixWorkflowResponseGraph
     created_at: datetime
     updated_at: datetime
 
-class GetMatrixFlowListItem(BaseModel):
+class GetMatrixWorkflowListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
@@ -50,15 +50,15 @@ class GetMatrixFlowListItem(BaseModel):
     updated_at: datetime
 
 
-class MatrixFlow(BaseModel):
+class MatrixWorkflow(BaseModel):
     id: uuid.UUID
     nodes: list[dict] = []
-    edges: list[MatrixFlowEdge] = []
-    viewport: MatrixFlowViewport
+    edges: list[MatrixWorkflowEdge] = []
+    viewport: MatrixWorkflowViewport
     created_at: datetime
     updated_at: datetime
 
-class UpdateMatrixFlowPayload(BaseModel):
-    graph: Optional[MatrixFlowResponseGraph] = None
+class UpdateMatrixWorkflowPayload(BaseModel):
+    graph: Optional[MatrixWorkflowResponseGraph] = None
     name: Optional[str] = None
     description: Optional[str] = None

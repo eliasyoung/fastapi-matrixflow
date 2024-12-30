@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     database_url: str
     echo_sql: bool = True
     test: bool = False
-    project_name: str = "MatrixFlowHHAIHAIHIA"
+    project_name: str = "MatrixWorkflowHHAIHAIHIA"
     oauth_token_secret: str = "my_precious"
     log_level: str = "DEBUG"
 

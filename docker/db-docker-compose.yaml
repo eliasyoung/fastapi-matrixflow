@@ -1,21 +1,21 @@
 version: "1.0.0"
-name: matrix_flow_test_db
+name: matrix_workflow_test_db
 
 services:
   db:
-    container_name: matrix_flow_db_container
+    container_name: matrix_workflow_db_container
     image: postgres:16.4
     restart: always
     environment:
-      POSTGRES_DB: matrix_flow
+      POSTGRES_DB: matrix_workflow
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: adminpassword
-      PGDATA: /var/lib/postgresql/matrix_flow/data
+      PGDATA: /var/lib/postgresql/matrix_workflow/data
       PGPORT: 5430
     ports:
       - "8010:5430"
     volumes:
-      - db-data:/var/lib/postgresql/matrix_flow/data
+      - db-data:/var/lib/postgresql/matrix_workflow/data
     healthcheck:
       test:
         [
@@ -24,7 +24,7 @@ services:
           "-U",
           "admin",
           "-d",
-          "matrix_flow",
+          "matrix_workflow",
           "-h",
           "localhost",
         ]

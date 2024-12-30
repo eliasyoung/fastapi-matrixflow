@@ -7,8 +7,8 @@ from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 
 from . import Base
 
-class Matrixflow(Base):
-    __tablename__ = "matrixflows"
+class MatrixWorkflow(Base):
+    __tablename__ = "matrix_workflows"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, index=True, server_default=text('gen_random_uuid()'))
     name: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
