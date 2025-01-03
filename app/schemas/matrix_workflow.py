@@ -22,7 +22,7 @@ class MatrixWorkflowViewport(BaseModel):
     y: float
     zoom: float
 
-class MatrixWorkflowResponseGraph(BaseModel):
+class MatrixWorkflowGraph(BaseModel):
     nodes: list[dict] = []
     edges: list[MatrixWorkflowEdge] = []
     viewport: MatrixWorkflowViewport
@@ -30,13 +30,13 @@ class MatrixWorkflowResponseGraph(BaseModel):
 class CreateMatrixWorkflowPayload(BaseModel):
     name: str
     description: Union[str, None] = None
-    graph: MatrixWorkflowResponseGraph
+    graph: MatrixWorkflowGraph
 
 class GetMatrixWorkflowResponse(BaseModel):
     id: uuid.UUID
     name: str
     description: Union[str, None] = None
-    graph: MatrixWorkflowResponseGraph
+    graph: MatrixWorkflowGraph
     created_at: datetime
     updated_at: datetime
 
@@ -59,6 +59,6 @@ class MatrixWorkflow(BaseModel):
     updated_at: datetime
 
 class UpdateMatrixWorkflowPayload(BaseModel):
-    graph: Optional[MatrixWorkflowResponseGraph] = None
+    graph: Optional[MatrixWorkflowGraph] = None
     name: Optional[str] = None
     description: Optional[str] = None
