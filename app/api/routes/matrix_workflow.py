@@ -4,7 +4,6 @@ from app.schemas.matrix_workflow import (
     GetMatrixWorkflowResponse,
     GetMatrixWorkflowListItem,
     UpdateMatrixWorkflowPayload,
-    MatrixWorkflowGraph,
     # MatrixWorkflowNode
 )
 from app.schemas.api import CustomJSONResponse
@@ -22,7 +21,7 @@ from app.api.dep import DBSessoinDep
 import uuid
 import json
 
-from app.core.matrix_workflow.graph.graph import Graph
+from app.services.matrix_workflow import MatrixWorkflowRunningService
 
 router = APIRouter(prefix="/matrix_workflow", tags=["matrix_workflow"])
 
@@ -136,39 +135,11 @@ async def create_workflow(create_workflow_payload: CreateMatrixWorkflowPayload, 
 async def run_workflow(workflow_id: uuid.UUID, db_session: DBSessoinDep):
     try:
 
-        workflow = await get_matrix_workflow(db_session, workflow_id)
-
-
-        if not workflow:
-            raise HTTPException(status_code=404, detail="Workflow not found")
-
-        graph = MatrixWorkflowGraph.parse_raw(workflow.graph)
-
-        graph_cls_instance = Graph.init(graph.dict())
-
-        # nodes = graph.nodes
-
-        # for node in nodes:
-        #     type = node.get('type')
-
-        #     if type is not None:
-        #         node_cls = node_type_class_mapping[NodeType(type)]
-        #         node_instance = node_cls()
-        #         res = node_instance.run()
-        #         result.append(res)
-        edge_mapping = {
-            key: [vars(edge) for edge in edge_list]
-            for key, edge_list in graph_cls_instance.source_node_edge_mapping.items()
-        }
+        running_result = await MatrixWorkflowRunningService.run(db_session, workflow_id)
 
         return CustomJSONResponse(
             code=0,
-            data={
-                "root_node_id": graph_cls_instance.root_node_id,
-                "node_id_list": graph_cls_instance.node_id_list,
-                "node_id_data_mapping": graph_cls_instance.node_id_data_mapping,
-                "source_node_edge_mapping": edge_mapping
-            }
+            data=running_result
         )
 
     except HTTPException:

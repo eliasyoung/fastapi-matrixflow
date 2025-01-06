@@ -1,5 +1,4 @@
-from typing import Any, cast
-from pydantic import BaseModel
+from typing import Any, Union, cast
 from app.core.matrix_workflow.nodes.node_type import NodeType
 
 class Edge:
@@ -12,10 +11,6 @@ class Edge:
 
 
 class Graph:
-
-    # node_list: list[Any]=[]
-    # edge_list: list[Any]=[]
-
     root_node_id: str
     node_id_list: list[str]=[]
     node_id_data_mapping: dict[str, dict]={}
@@ -52,12 +47,18 @@ class Graph:
 
         graph.source_node_edge_mapping = source_node_edge_mapping
 
+        root_node_id: Union[str, None] = None
+
         for node in node_list:
             if node["type"] == NodeType.START:
-                graph.root_node_id = node["id"]
+                root_node_id = node["id"]
 
             graph.node_id_list.append(node["id"])
             graph.node_id_data_mapping.update({node["id"]: node})
 
+        if not root_node_id:
+            raise Exception('No root node found!')
+
+        graph.root_node_id = root_node_id
 
         return graph

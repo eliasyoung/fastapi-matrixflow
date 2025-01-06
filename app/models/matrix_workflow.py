@@ -1,9 +1,12 @@
 import uuid
+import json
 from datetime import datetime
 
 from sqlalchemy import Text, text, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
+
+from typing import Mapping, Any
 
 from . import Base
 
@@ -16,3 +19,7 @@ class MatrixWorkflow(Base):
     graph: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
     updated_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False, server_default=text('CURRENT_TIMESTAMP'), onupdate=datetime.now())
+
+    @property
+    def graph_dict(self) -> Mapping[str, Any]:
+        return json.loads(self.graph) if self.graph else {}
