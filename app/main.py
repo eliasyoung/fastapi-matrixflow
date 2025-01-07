@@ -1,16 +1,16 @@
 import sys
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 
 from app.api.main import api_router
-
 from app.settings import settings
 from app.database import sessionManager
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG if settings.log_level == "DEBUG" else logging.INFO)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
