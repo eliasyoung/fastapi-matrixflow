@@ -5,4 +5,7 @@ class StartNode(BaseNode):
     _node_type = NodeType.START
 
     def _run(self) -> str:
-        return self._node_type
+        a = self.variable_pool.get(('input_vars', "a"))
+
+        # return self._node_type
+        return a or self._node_type

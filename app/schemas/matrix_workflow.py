@@ -1,7 +1,7 @@
 import uuid
 
 from datetime import datetime
-from typing import Union, Optional
+from typing import Union, Optional, Mapping, Any
 from pydantic import BaseModel, ConfigDict
 
 # class MatrixFlowNodeData(BaseModel):
@@ -62,3 +62,6 @@ class UpdateMatrixWorkflowPayload(BaseModel):
     graph: Optional[MatrixWorkflowGraph] = None
     name: Optional[str] = None
     description: Optional[str] = None
+
+class RunMatrixWorkflowPayload(BaseModel):
+    inputs: Optional[Mapping[str, Any]] = None

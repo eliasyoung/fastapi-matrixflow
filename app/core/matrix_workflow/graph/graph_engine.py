@@ -1,11 +1,13 @@
 from app.core.matrix_workflow.graph.graph import Graph
 from app.core.matrix_workflow.nodes.node_type import NodeType
 from app.core.matrix_workflow.nodes.node_type_class_mapping import node_type_class_mapping
+from app.core.matrix_workflow.workflow_runner.variables.variable_pool import VariablePool
 
 class GraphEngine:
 
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph, variable_pool: VariablePool):
         self.graph = graph
+        self.variable_pool = variable_pool
 
     def run_graph(
         self,
@@ -32,7 +34,7 @@ class GraphEngine:
             current_node_type = NodeType(current_node_config.get("type"))
             current_node_cls = node_type_class_mapping[current_node_type]
 
-            current_node_instance = current_node_cls()
+            current_node_instance = current_node_cls(variable_pool=self.variable_pool)
 
 
             current_node_run_result = current_node_instance.run()
@@ -72,6 +74,4 @@ class GraphEngine:
         #     "node_id_data_mapping": self.graph.node_id_data_mapping,
         #     "source_node_edge_mapping": edge_mapping
         # }
-        return {
-            "run_result": result_list
-        }
+        return result_list

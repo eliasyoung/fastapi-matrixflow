@@ -1,9 +1,12 @@
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException
 from app.schemas.matrix_workflow import (
     CreateMatrixWorkflowPayload,
     GetMatrixWorkflowResponse,
     GetMatrixWorkflowListItem,
     UpdateMatrixWorkflowPayload,
+    RunMatrixWorkflowPayload
     # MatrixWorkflowNode
 )
 from app.schemas.api import CustomJSONResponse
@@ -132,10 +135,15 @@ async def create_workflow(create_workflow_payload: CreateMatrixWorkflowPayload, 
     )
 
 @router.post("/{workflow_id}/run")
-async def run_workflow(workflow_id: uuid.UUID, db_session: DBSessoinDep):
+async def run_workflow(workflow_id: uuid.UUID, db_session: DBSessoinDep, payload: Optional[RunMatrixWorkflowPayload]=None):
+    if payload is not None:
+        inputs = payload.inputs or {}
+    else:
+        inputs = {}
+
     try:
 
-        running_result = await MatrixWorkflowRunningService.run(db_session, workflow_id)
+        running_result = await MatrixWorkflowRunningService.run(db_session, workflow_id, inputs_vars=inputs)
 
         return CustomJSONResponse(
             code=0,
