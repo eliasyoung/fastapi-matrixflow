@@ -20,6 +20,7 @@ class GraphEngine:
         start_node_id = self.graph.root_node_id
         # parallel_start_node_id = None
         next_node_id = start_node_id
+        previous_node_id = start_node_id
 
         result_list = []
 
@@ -32,12 +33,18 @@ class GraphEngine:
 
 
             current_node_type = NodeType(current_node_config.get("type"))
+
+            current_node_data = current_node_config.get("data")
+            if not current_node_data:
+                raise Exception(f"data of node {current_node_id} not found!")
+
             current_node_cls = node_type_class_mapping[current_node_type]
 
-            current_node_instance = current_node_cls(variable_pool=self.variable_pool)
+            current_node_instance = current_node_cls(variable_pool=self.variable_pool, previous_node_id=previous_node_id, node_data=current_node_data)
 
 
             current_node_run_result = current_node_instance.run()
+            self.variable_pool.add(("run_outputs", current_node_id), current_node_run_result)
             result_list.append(current_node_run_result)
 
 
@@ -56,6 +63,7 @@ class GraphEngine:
             edge = edge_mappings[0]
 
             next_node_id = edge.target_node_id
+            previous_node_id = current_node_id
 
             # if len(edge_mappings) == 1:
             #     edge = edge_mappings[0]
